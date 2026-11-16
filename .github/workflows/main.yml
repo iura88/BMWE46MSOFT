@@ -23,11 +23,16 @@ jobs:
         with:
           gradle-version: '8.4'
 
-      - name: Build Debug APK
-        run: gradle assembleDebug
+      - name: Locate project and build Debug APK
+        run: |
+          if [ -f "E46BoardLauncher/settings.gradle.kts" ]; then
+            cd E46BoardLauncher
+          fi
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          gradle assembleDebug --stacktrace
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: E46-Board-Monitor-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: "**/app/build/outputs/apk/debug/app-debug.apk"
